@@ -1,4 +1,4 @@
-# ELi_VmM_4_01
+# ELi_VmM_4_1
 
 Libraries for E-LAGORi boards - Variable gain microphone modules
 
