@@ -19,13 +19,13 @@
  *
  */
 
-#ifndef ELi_VmM_4_00_H
-#define ELi_VmM_4_00_H
+#ifndef ELi_VmM_4_10_H
+#define ELi_VmM_4_10_H
 
 #include <ELi_McM_4_00.h>
 
 #ifdef ESP32
-  #include "esp32/VmM_ESP32D_4_00.h"
+  #include "esp32/VmM_ESP32D_4_10.h"
 #else 
   #error "Controller not supported"
 #endif
