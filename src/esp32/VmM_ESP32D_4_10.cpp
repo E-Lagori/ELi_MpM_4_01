@@ -1,5 +1,5 @@
 #include<ELi_VmM_4_10.h>
-#include <ELi_McM_4_10.h>
+#include<ELi_McM_4_00.h>
 #include<Wire.h>
 #include <math.h>
 
@@ -26,20 +26,13 @@ int VmM_4_10::VmM_chgBoardadd(int address)
 int VmM_4_10::VmM_sendi2cdata(){
           int i=0;
           Wire.begin(SDA, SCL);
-        //   Wire.begin(SCL, SDA);
           Wire.beginTransmission((int)(this->addr));
           for(i=0;i<2;i++){
           Wire.write(txbuffer[i]); 
            }
           Wire.endTransmission();
         }
-// int VmM_4_00::VmM_received_data()
-//         {
-//           VmM_sendi2cdata();
-//           Wire.requestFrom((int)(this->addr), 1);
-//           int VmM_read_bit=Wire.read();
-//           return ((VmM_read_bit == 19) || (VmM_read_bit == 3))? 1:0;
-//         } 
+
 int VmM_4_10::VmM_Command16(){
         txbuffer[0] = 0B11010000;
         txbuffer[1] = 0B00000011;
@@ -54,7 +47,6 @@ int VmM_4_10::VmM_check_i2c(int data){
         Wire.requestFrom((int)(this->addr), 1);
         int VmM_read_bit=Wire.read();
         VmM_read_data = ((VmM_read_bit == 19) || (VmM_read_bit == 3))? 1:0;
-        // VmM_read_data = VmM_received_data();
 }
 int VmM_4_10::VmM_Write(bool RDACno, int D_set){   
         VmM_Command16();
@@ -83,18 +75,12 @@ float VmM_4_10::setGain(float Gain_dB){
         if (Gain_dB>28.43){this-> D_1 = 255;this-> D_2 = 0;this-> Gain_dB_val = Max_dB_val;VmM_Write(0,this->D_1);VmM_Write(1,this->D_2);return (VmM_read_data)? 1:2;}
         else if (Gain_dB<-40.46){this-> D_1 = 0;this-> D_2 = 255;this-> Gain_dB_val = Min_dB_val;VmM_Write(0,this->D_1);VmM_Write(1,this->D_2);return (VmM_read_data)? -1:2;}
         else{
-                // int VmM_RT = 10000,VmM_RC = 1000,VmM_RW = 40;
-                // float VmM_NGain_1dB,VmM_NGain_dB,VmM_NGain,VmM_Gain_1dB,VmM_RWB,VmM_RAW,D2;
+                
                 float VmM_Gain_dB = Gain_dB;
                 float VmM_Gain = pow(10,(VmM_Gain_dB/20));
                 for(int D1 = 0;D1<256;D1++){
                         D2 = round(256-(256*(((VmM_Gain*VmM_RT)/(1+2*(VmM_RC/(((256.0- D1)/256.0)*VmM_RT+VmM_RW))))-VmM_RW)/VmM_RT));
                         if(D2<256 && D2>=0){
-                                // VmM_RWB = (((256.0- D2)/256.0)*VmM_RT+VmM_RW);
-                                // VmM_RAW = (((256.0- D1)/256.0)*VmM_RT+VmM_RW);
-                                // VmM_NGain = (VmM_RWB/VmM_RT)*(1+(2*(VmM_RC)/VmM_RAW));
-                                // VmM_NGain_dB = (20*log10(VmM_NGain));
-                                // VmM_NGain_1dB = round(VmM_NGain_dB* 10) / 10;
                                 VmM_NGain_1dB = VmM_GainCal(D1,D2);
                                 VmM_Gain_1dB= round(VmM_Gain_dB* 10) / 10; 
                                 if(VmM_NGain_1dB == VmM_Gain_1dB){
@@ -107,7 +93,6 @@ float VmM_4_10::setGain(float Gain_dB){
                 }
                 VmM_Write(0,this->D_1);
                 VmM_Write(1,this->D_2);
-//                if (VmM_read_data){return 0;}else{return 2;}
                 return (VmM_read_data)? 0:2;
                 }
 }  
@@ -165,4 +150,4 @@ int VmM_4_10::VmM_receivei2cdata()
           return VmM_read_bit ;
         }
 
-                                  
+                             
